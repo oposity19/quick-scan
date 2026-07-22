@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick-Scan — AI Growth Partner</title>
+<style>
+/* ─── TOKENS ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:          #0D2137;
+  --surface:     #162D43;
+  --surface-2:   #1C3650;
+  --border:      #254D6E;
+  --accent:      #F5820D;
+  --accent-dim:  #C2640A;
+  --accent-faint:rgba(245,130,13,0.10);
+  --text:        #E8F2FB;
+  --muted:       #6B91AD;
+  --dim:         #3A5F7A;
+  --pos:         #3CC68A;
+  --pos-bg:      rgba(60,198,138,0.09);
+  --warn:        #F0B429;
+  --warn-bg:     rgba(240,180,41,0.10);
+  --neg:         #E06060;
+  --neg-bg:      rgba(224,96,96,0.09);
+  --radius:      6px;
+  --radius-lg:   10px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:        #EBF2F9;
+    --surface:   #FFFFFF;
+    --surface-2: #DCE8F4;
+    --border:    #BACEDE;
+    --text:      #0D2137;
+    --muted:     #4A6D88;
+    --dim:       #9AB7CC;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:        #0D2137;
+  --surface:   #162D43;
+  --surface-2: #1C3650;
+  --border:    #254D6E;
+  --text:      #E8F2FB;
+  --muted:     #6B91AD;
+  --dim:       #3A5F7A;
+}
+
+:root[data-theme="light"] {
+  --bg:        #EBF2F9;
+  --surface:   #FFFFFF;
+  --surface-2: #DCE8F4;
+  --border:    #BACEDE;
+  --text:      #0D2137;
+  --muted:     #4A6D88;
+  --dim:       #9AB7CC;
+}
+
+/* ─── RESET ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; border: none; background: none; }
+input  { font: inherit; }
+
+/* ─── BASE ───────────────────────────────────────────────────────────── */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-mark {
+  width: 30px;
+  height: 30px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-mark svg { display: block; }
+
+.brand-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.brand-tool {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.empresa-input-wrap {
+  position: relative;
+}
+
+.empresa-input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  font-size: 14px;
+  width: 200px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.empresa-input::placeholder { color: var(--muted); }
+.empresa-input:focus { border-color: var(--accent); }
+
+.btn-reset {
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  letter-spacing: 0.02em;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.btn-reset:hover { color: var(--text); border-color: var(--muted); }
+
+.btn-theme {
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.btn-theme:hover { color: var(--text); }
+
+/* ─── MAIN GRID ──────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  min-height: calc(100vh - 62px);
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; min-height: auto; }
+}
+
+/* ─── INTAKE PANEL ───────────────────────────────────────────────────── */
+.intake {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.intake-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.field:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-q {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--dim);
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-faint);
+}
+
+.input-unit {
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  flex-shrink: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.input-unit-right {
+  border-left: 1px solid var(--border);
+}
+
+.input-unit-left {
+  border-right: 1px solid var(--border);
+}
+
+.field input[type="number"],
+.field input[type="text"] {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  padding: 12px 14px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+
+.field input[type="number"]::-webkit-inner-spin-button,
+.field input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.field input::placeholder { color: var(--dim); font-weight: 400; font-size: 16px; }
+
+.field-note {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+/* ─── RESULTS PANEL ──────────────────────────────────────────────────── */
+.results {
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow-x: hidden;
+}
+
+/* ─── ROAS HERO ──────────────────────────────────────────────────────── */
+.roas-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.roas-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.roas-number-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.roas-value {
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
+
+.roas-value.empty { color: var(--dim); }
+
+.roas-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+.roas-formula {
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.roas-description {
+  font-size: 14px;
+  color: var(--text);
+  max-width: 360px;
+  line-height: 1.5;
+}
+
+.gp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.gp-badge strong {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ─── SCENARIO TABLE ─────────────────────────────────────────────────── */
+.scenarios {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scenarios-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  min-width: 480px;
+}
+
+thead th {
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+  border-bottom: 2px solid var(--border);
+}
+
+thead th:first-child { text-align: left; color: var(--dim); }
+thead th.col-conservador { color: var(--muted); }
+thead th.col-recomendado { color: var(--accent); }
+thead th.col-cliente { color: var(--text); }
+
+tbody tr {
+  border-bottom: 1px solid var(--surface-2);
+}
+
+tbody tr:last-child { border-bottom: none; }
+
+tbody td {
+  padding: 13px 16px;
+  font-size: 15px;
+  text-align: right;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+tbody td:first-child {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.val-empty { color: var(--dim); font-weight: 400; }
+
+/* Conservador */
+td.c-inversion  { color: var(--text); }
+td.c-ventas     { color: var(--muted); }
+td.c-profit     { color: var(--pos);  }
+td.c-pct        { color: var(--muted); font-size: 13px; }
+
+/* Recomendado — highlighted column */
+.col-rec-cell {
+  background: var(--accent-faint);
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+
+thead th.col-recomendado { background: var(--accent-faint); border-left: 2px solid var(--accent); border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
+
+td.r-inversion  { color: var(--accent); font-weight: 700; }
+td.r-ventas     { color: var(--muted); }
+td.r-profit     { color: var(--pos); font-weight: 700; }
+td.r-pct        { color: var(--muted); font-size: 13px; }
+
+/* Cliente */
+td.cl-inversion { color: var(--text); font-weight: 700; }
+td.cl-ventas    { color: var(--muted); }
+td.cl-profit    { color: var(--pos); font-weight: 700; }
+td.cl-pct       { color: var(--muted); font-size: 13px; }
+
+td.cl-inversion.warning-spend  { color: var(--warn); }
+td.cl-profit.warning-spend     { color: var(--warn); }
+td.cl-pct.warning-spend        { color: var(--warn); }
+
+/* ─── WARNING ────────────────────────────────────────────────────────── */
+.warning-box {
+  display: none;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+
+.warning-box.visible { display: flex; }
+
+.warn-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.warn-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.warn-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--warn);
+  letter-spacing: 0.02em;
+}
+
+.warn-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ─── RECOMMENDATION ─────────────────────────────────────────────────── */
+.recommendation {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.rec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.rec-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rec-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-value.accent  { color: var(--accent); }
+.rec-value.pos     { color: var(--pos); }
+.rec-value.empty   { color: var(--dim); font-weight: 400; }
+
+/* ─── FOOTER ─────────────────────────────────────────────────────────── */
+.footer {
+  padding: 0 36px 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.btn-copy:hover { background: var(--accent-dim); }
+
+.btn-copy svg { flex-shrink: 0; }
+
+.btn-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.btn-email:hover { border-color: var(--muted); }
+
+.btn-cal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.btn-cal:hover { background: var(--accent-dim); }
+.btn-cal svg { flex-shrink: 0; }
+
+.copy-toast {
+  font-size: 13px;
+  color: var(--pos);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.copy-toast.show { opacity: 1; }
+
+/* ─── EMPTY STATE ────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 200px;
+  color: var(--dim);
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 32px;
+  opacity: 0.4;
+}
+
+.empty-state-text {
+  font-size: 14px;
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+/* ─── VIABILITY NOTE ─────────────────────────────────────────────────── */
+.viability-warn {
+  display: none;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--neg-bg);
+  border: 1px solid var(--neg);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.viability-warn.visible { display: flex; }
+
+.viability-warn strong { color: var(--neg); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="logo-mark">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 13L8 3L13 13M5.5 9.5H10.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">AI Growth Partner</div>
+      <div class="brand-tool">Quick-Scan</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <a class="btn-cal" href="https://cal.com/ian/quick-scan" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="white" stroke-width="1.5"/>
+        <path d="M1.5 5.5H12.5M4 1V3.5M10 1V3.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Agenda tu llamada
+    </a>
+    <input class="empresa-input" id="empresa" type="text" placeholder="Nombre de la empresa…" oninput="updateHeader()" autocomplete="off">
+    <button class="btn-reset" onclick="resetAll()">Limpiar</button>
+    <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Cambiar tema">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M7 1V2.5M7 11.5V13M1 7H2.5M11.5 7H13M2.93 2.93L3.99 3.99M10.01 10.01L11.07 11.07M11.07 2.93L10.01 3.99M3.99 10.01L2.93 11.07" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- LEFT: INTAKE -->
+  <section class="intake">
+    <div class="intake-heading">Los 5 datos</div>
+
+    <!-- Q1: Revenue -->
+    <div class="field">
+      <label class="field-label" for="revenue">
+        Facturación mensual
+        <span class="field-q">¿Cuánto facturan al mes en promedio?</span>
+      </label>
+      <div class="input-wrap">
+        <span class="input-unit input-unit-left">$</span>
+        <input type="number" id="revenue" placeholder="0" min="0" oninput="recalculate()">
+        <span class="input-unit input-unit-right">MXN</span>
+      </div>
+    </div>
+
+    <!-- Q2: Margin -->
+    <div class="field">
+      <label class="field-label" for="margin">
+        Margen bruto
+        <span class="field-q">¿Qué porcentaje de cada venta es ganancia?</span>
+      </label>
+      <div class="input-wrap">
+        <input type="number" id="margin" placeholder="0" min="0" max="100" step="0.1" oninput="recalculate()">
+        <span class="input-unit input-unit-right">%</span>
+      </div>
+      <span class="field-note" id="margin-note"></span>
+    </div>
+
+    <!-- Q3: Star product -->
+    <div class="field">
+      <label class="field-label" for="product">
+        Producto estrella
+        <span class="field-q">¿Qué producto/servicio anunciarías primero?</span>
+      </label>
+      <div class="input-wrap">
+        <input type="text" id="product" placeholder="ej. Membresía anual, Cursos online…" oninput="recalculate()" autocomplete="off">
+      </div>
+    </div>
+
+    <!-- Q4: Prior spend -->
+    <div class="field">
+      <label class="field-label" for="prior">
+        Inversión actual en ads
+        <span class="field-q">¿Ya invierten en publicidad? ¿Cuánto al mes?</span>
+      </label>
+      <div class="input-wrap">
+        <span class="input-unit input-unit-left">$</span>
+        <input type="number" id="prior" placeholder="0 si no hay ads" min="0" oninput="recalculate()">
+        <span class="input-unit input-unit-right">MXN</span>
+      </div>
+      <span class="field-note" id="prior-note"></span>
+    </div>
+
+    <!-- Q5: Desired budget -->
+    <div class="field">
+      <label class="field-label" for="desired">
+        ¿Cuánto quieren invertir?
+        <span class="field-q">El número que tienen en mente para empezar</span>
+      </label>
+      <div class="input-wrap">
+        <span class="input-unit input-unit-left">$</span>
+        <input type="number" id="desired" placeholder="0" min="0" oninput="recalculate()">
+        <span class="input-unit input-unit-right">MXN</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: RESULTS -->
+  <section class="results">
+
+    <!-- ROAS HERO -->
+    <div class="roas-hero" id="roas-hero">
+      <div class="roas-eyebrow">Break-even ROAS</div>
+      <div class="roas-number-row">
+        <div class="roas-value empty" id="roas-display">—</div>
+        <div class="roas-meta" id="roas-meta" style="display:none">
+          <div class="roas-formula" id="roas-formula"></div>
+          <div class="roas-description" id="roas-desc"></div>
+        </div>
+      </div>
+      <div class="gp-badge" id="gp-badge">
+        Utilidad bruta mensual: <strong id="gp-value">—</strong>
+      </div>
+    </div>
+
+    <!-- VIABILITY WARNING (margin < 33%) -->
+    <div class="viability-warn" id="viability-warn">
+      <span style="font-size:18px;flex-shrink:0;">⚠</span>
+      <div>
+        <strong>Margen bajo — ads pueden no ser viables</strong><br>
+        Con un margen inferior al 33%, el ROAS necesario para cubrir costos es alto. Revisar estructura de precios antes de invertir en paid.
+      </div>
+    </div>
+
+    <!-- SCENARIO TABLE -->
+    <div class="scenarios" id="scenarios-section">
+      <div class="scenarios-heading">Los tres escenarios</div>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-state-icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="6" y="8" width="28" height="24" rx="3" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+            <path d="M12 20H28M12 26H22M12 14H28" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="empty-state-text">Ingresa facturación y margen para ver los escenarios</div>
+      </div>
+
+      <div class="table-wrap" id="table-wrap" style="display:none">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="col-conservador">Conservador</th>
+              <th class="col-recomendado">Recomendado</th>
+              <th class="col-cliente" id="th-cliente">Tu objetivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Inversión</td>
+              <td class="c-inversion" id="c-inversion">—</td>
+              <td class="r-inversion col-rec-cell" id="r-inversion">—</td>
+              <td class="cl-inversion" id="cl-inversion">—</td>
+            </tr>
+            <tr>
+              <td>Ventas para break-even</td>
+              <td class="c-ventas" id="c-ventas">—</td>
+              <td class="r-ventas col-rec-cell" id="r-ventas">—</td>
+              <td class="cl-ventas" id="cl-ventas">—</td>
+            </tr>
+            <tr>
+              <td>Utilidad extra si 3x ROAS</td>
+              <td class="c-profit" id="c-profit">—</td>
+              <td class="r-profit col-rec-cell" id="r-profit">—</td>
+              <td class="cl-profit" id="cl-profit">—</td>
+            </tr>
+            <tr>
+              <td>% de utilidad bruta</td>
+              <td class="c-pct" id="c-pct">—</td>
+              <td class="r-pct col-rec-cell" id="r-pct">—</td>
+              <td class="cl-pct" id="cl-pct">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div class="warning-box" id="warning-box">
+      <div class="warn-icon">⚠</div>
+      <div class="warn-body">
+        <div class="warn-title" id="warn-title">Inversión ambiciosa</div>
+        <div class="warn-text" id="warn-text"></div>
+      </div>
+    </div>
+
+    <!-- RECOMMENDATION STRIP -->
+    <div class="recommendation" id="rec-strip" style="display:none">
+      <div class="rec-item">
+        <div class="rec-label">Qué anunciar</div>
+        <div class="rec-value" id="rec-product">—</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-label">Budget mes 1</div>
+        <div class="rec-value accent" id="rec-budget">—</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-label">Break-even ROAS</div>
+        <div class="rec-value" id="rec-roas">—</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-label">ROAS objetivo</div>
+        <div class="rec-value pos">3.0x</div>
+      </div>
+      <div class="rec-item" id="rec-baseline-wrap" style="display:none">
+        <div class="rec-label">Baseline (ads actuales)</div>
+        <div class="rec-value" id="rec-baseline">—</div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <button class="btn-copy" onclick="copySummary()">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+      <rect x="4" y="4" width="9" height="9" rx="1.5" stroke="white" stroke-width="1.5"/>
+      <path d="M2 10.5V2.5C2 1.95 2.45 1.5 3 1.5H11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Copiar resumen
+  </button>
+  <a class="btn-email" id="mailto-btn" href="#">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+      <rect x="1.5" y="3" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M1.5 5L7.5 9L13.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Enviar por email
+  </a>
+  <span class="copy-toast" id="copy-toast">Copiado</span>
+</div>
+
+<script>
+/* ─── THEME ──────────────────────────────────────────────────────────── */
+(function() {
+  const saved = localStorage.getItem('qs-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.getAttribute('data-theme');
+  const isDark = current === 'dark' || (!current && matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = isDark ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('qs-theme', next);
+}
+
+/* ─── FORMATTING ─────────────────────────────────────────────────────── */
+function fmt(n, compact) {
+  if (!isFinite(n) || n === null) return '—';
+  const abs = Math.abs(n);
+  if (compact && abs >= 1000000) return '$' + (n / 1000000).toFixed(1) + 'M';
+  if (compact && abs >= 1000)    return '$' + (n / 1000).toFixed(0) + 'K';
+  return '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function fmtPct(n) {
+  if (!isFinite(n)) return '—';
+  return n.toFixed(1) + '%';
+}
+
+/* ─── STATE ──────────────────────────────────────────────────────────── */
+function getInputs() {
+  return {
+    revenue:  parseFloat(document.getElementById('revenue').value) || 0,
+    margin:   parseFloat(document.getElementById('margin').value)  || 0,
+    product:  document.getElementById('product').value.trim(),
+    prior:    parseFloat(document.getElementById('prior').value)   || 0,
+    desired:  parseFloat(document.getElementById('desired').value) || 0,
+    empresa:  document.getElementById('empresa').value.trim(),
+  };
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────────── */
+function updateHeader() {
+  // Nothing extra needed — empresa input is already visible
+}
+
+/* ─── MAIN CALCULATION ───────────────────────────────────────────────── */
+function recalculate() {
+  const d = getInputs();
+  const marginFrac = d.margin / 100;
+
+  const hasNumbers = d.revenue > 0 && d.margin > 0;
+
+  // Break-even ROAS
+  const roas = marginFrac > 0 ? (1 / marginFrac) : null;
+
+  // Gross profit
+  const gp = d.revenue * marginFrac;
+
+  // Three spend levels
+  const conservative = gp * 0.10;
+  const recommended  = gp * 0.15;
+  const clientAmt    = d.desired;
+
+  /* ── ROAS HERO ── */
+  const roasDisplay = document.getElementById('roas-display');
+  const roasMeta    = document.getElementById('roas-meta');
+
+  if (!hasNumbers) {
+    roasDisplay.textContent = '—';
+    roasDisplay.className = 'roas-value empty';
+    roasMeta.style.display = 'none';
+  } else {
+    roasDisplay.textContent = roas.toFixed(2) + 'x';
+    roasDisplay.className = 'roas-value';
+    roasMeta.style.display = '';
+    document.getElementById('roas-formula').textContent = `1 ÷ ${d.margin}% = ${roas.toFixed(2)}x`;
+    document.getElementById('roas-desc').textContent =
+      `Por cada $1 invertido en ads, Meta necesita generar ${fmt(roas)} en ventas para que no pierdas dinero.`;
+  }
+
+  document.getElementById('gp-value').textContent = hasNumbers ? fmt(gp) + ' MXN' : '—';
+
+  /* ── VIABILITY WARNING ── */
+  const viability = document.getElementById('viability-warn');
+  if (hasNumbers && d.margin < 33) {
+    viability.classList.add('visible');
+  } else {
+    viability.classList.remove('visible');
+  }
+
+  /* ── MARGIN NOTE ── */
+  const marginNote = document.getElementById('margin-note');
+  if (d.margin > 0 && d.margin < 20) {
+    marginNote.textContent = 'Margen muy ajustado — el ROAS mínimo para ser rentable es alto.';
+    marginNote.style.color = 'var(--neg)';
+  } else if (d.margin >= 20 && d.margin < 33) {
+    marginNote.textContent = 'Margen bajo — ads pueden funcionar con buen funnel y producto.';
+    marginNote.style.color = 'var(--warn)';
+  } else if (d.margin >= 33) {
+    marginNote.textContent = 'Margen saludable — ads tienen buenas probabilidades.';
+    marginNote.style.color = 'var(--pos)';
+  } else {
+    marginNote.textContent = '';
+  }
+
+  /* ── PRIOR NOTE ── */
+  const priorNote = document.getElementById('prior-note');
+  if (d.prior > 0) {
+    priorNote.textContent = `Baseline activo: ${fmt(d.prior)}/mes en ads. La performance se mide sobre lo que se genera encima de esta inversión.`;
+    priorNote.style.color = 'var(--muted)';
+  } else {
+    priorNote.textContent = 'Sin ads previos — toda la revenue atribuida a Meta es incremental.';
+    priorNote.style.color = 'var(--dim)';
+  }
+
+  /* ── TABLE ── */
+  const emptyState = document.getElementById('empty-state');
+  const tableWrap  = document.getElementById('table-wrap');
+
+  if (!hasNumbers) {
+    emptyState.style.display = '';
+    tableWrap.style.display  = 'none';
+    document.getElementById('rec-strip').style.display = 'none';
+    document.getElementById('warning-box').classList.remove('visible');
+    updateMailto(null);
+    return;
+  }
+
+  emptyState.style.display = 'none';
+  tableWrap.style.display  = '';
+
+  function calcScenario(spend) {
+    if (spend <= 0 || !roas) return null;
+    const salesNeeded = spend * roas;
+    const profitAt3x  = (spend * 3 * marginFrac) - spend;
+    const pct         = gp > 0 ? (spend / gp * 100) : 0;
+    return { spend, salesNeeded, profitAt3x, pct };
+  }
+
+  const sc = calcScenario(conservative);
+  const sr = calcScenario(recommended);
+  const sClient = clientAmt > 0 ? calcScenario(clientAmt) : null;
+
+  // Client column header
+  const thCliente = document.getElementById('th-cliente');
+  thCliente.textContent = d.empresa ? `Objetivo ${d.empresa}` : 'Tu objetivo';
+
+  // Fill conservative
+  setText('c-inversion', sc ? fmt(sc.spend)       : '—');
+  setText('c-ventas',    sc ? fmt(sc.salesNeeded)  : '—');
+  setText('c-profit',    sc ? fmt(sc.profitAt3x)   : '—');
+  setText('c-pct',       sc ? fmtPct(sc.pct) + ' de UB' : '—');
+
+  // Fill recommended
+  setText('r-inversion', sr ? fmt(sr.spend)       : '—');
+  setText('r-ventas',    sr ? fmt(sr.salesNeeded)  : '—');
+  setText('r-profit',    sr ? fmt(sr.profitAt3x)   : '—');
+  setText('r-pct',       sr ? fmtPct(sr.pct) + ' de UB' : '—');
+
+  // Client desired column
+  const isWarning = sClient && sClient.pct > 15;
+  applyClientCell('cl-inversion', sClient ? fmt(sClient.spend) : '—', isWarning);
+  applyClientCell('cl-ventas',    sClient ? fmt(sClient.salesNeeded) : '—', false);
+  applyClientCell('cl-profit',    sClient ? fmt(sClient.profitAt3x) : '—', isWarning);
+  applyClientCell('cl-pct',       sClient ? fmtPct(sClient.pct) + ' de UB' : '—', isWarning);
+
+  /* ── WARNING BOX ── */
+  const warnBox = document.getElementById('warning-box');
+  if (isWarning) {
+    warnBox.classList.add('visible');
+    document.getElementById('warn-title').textContent =
+      `Inversión ambiciosa — ${fmtPct(sClient.pct)} de la utilidad bruta`;
+    document.getElementById('warn-text').textContent =
+      `Con ${fmt(sClient.spend)} inviertes ${fmtPct(sClient.pct)} de tu utilidad bruta mensual. ` +
+      `El riesgo es real pero manejable si el ROAS supera ${roas ? roas.toFixed(2) + 'x' : '—'}. ` +
+      `Recomendación: empezar con ${fmt(recommended)} el mes 1 y escalar cuando el ROAS supere 2.5x.`;
+  } else {
+    warnBox.classList.remove('visible');
+  }
+
+  /* ── RECOMMENDATION STRIP ── */
+  const recStrip = document.getElementById('rec-strip');
+  recStrip.style.display = '';
+
+  document.getElementById('rec-product').textContent = d.product || '—';
+  document.getElementById('rec-product').className = 'rec-value' + (d.product ? '' : ' empty');
+  document.getElementById('rec-budget').textContent = sr ? fmt(sr.spend) : '—';
+  document.getElementById('rec-roas').textContent   = roas ? roas.toFixed(2) + 'x' : '—';
+
+  const baselineWrap = document.getElementById('rec-baseline-wrap');
+  if (d.prior > 0) {
+    baselineWrap.style.display = '';
+    document.getElementById('rec-baseline').textContent = fmt(d.prior) + '/mes';
+  } else {
+    baselineWrap.style.display = 'none';
+  }
+
+  /* ── MAILTO LINK ── */
+  updateMailto({ d, gp, roas, conservative, recommended, sc, sr, sClient, isWarning });
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  el.textContent = val;
+}
+
+function applyClientCell(id, val, warn) {
+  const el = document.getElementById(id);
+  el.textContent = val;
+  if (warn) {
+    el.classList.add('warning-spend');
+  } else {
+    el.classList.remove('warning-spend');
+  }
+}
+
+/* ─── MAILTO ─────────────────────────────────────────────────────────── */
+function updateMailto(data) {
+  const btn = document.getElementById('mailto-btn');
+  if (!data) { btn.href = '#'; return; }
+
+  const { d, gp, roas, conservative, recommended, sc, sr, sClient, isWarning } = data;
+  const empresa = d.empresa || 'tu empresa';
+
+  let body = `Quick-Scan — ${empresa}\n`;
+  body += '─'.repeat(40) + '\n\n';
+  body += `Facturación mensual: ${fmt(d.revenue)} MXN\n`;
+  body += `Margen bruto: ${d.margin}% → Utilidad bruta: ${fmt(gp)} MXN\n`;
+  body += `Break-even ROAS: ${roas ? roas.toFixed(2) + 'x' : '—'}\n\n`;
+
+  body += 'ESCENARIOS:\n';
+  if (sc) body += `Conservador (${fmt(sc.spend)}): necesita ${fmt(sc.salesNeeded)} → utilidad extra si 3x: ${fmt(sc.profitAt3x)}\n`;
+  if (sr) body += `Recomendado (${fmt(sr.spend)}): necesita ${fmt(sr.salesNeeded)} → utilidad extra si 3x: ${fmt(sr.profitAt3x)}\n`;
+  if (sClient) {
+    body += `Objetivo (${fmt(sClient.spend)}): necesita ${fmt(sClient.salesNeeded)} → utilidad extra si 3x: ${fmt(sClient.profitAt3x)}`;
+    if (isWarning) body += ` ⚠ ${fmtPct(sClient.pct)} de UB`;
+    body += '\n';
+  }
+  body += '\n';
+
+  if (d.product) body += `Qué anunciar: ${d.product}\n`;
+  if (d.prior > 0) body += `Baseline actual en ads: ${fmt(d.prior)}/mes\n`;
+  body += '\nROAS objetivo: 3.0x\n';
+
+  btn.href = `mailto:?subject=Quick-Scan ${empresa}&body=${encodeURIComponent(body)}`;
+}
+
+/* ─── COPY SUMMARY ───────────────────────────────────────────────────── */
+function copySummary() {
+  const d = getInputs();
+  const marginFrac = d.margin / 100;
+  const gp   = d.revenue * marginFrac;
+  const roas = marginFrac > 0 ? (1 / marginFrac) : 0;
+  const conservative = gp * 0.10;
+  const recommended  = gp * 0.15;
+
+  const empresa = d.empresa || 'Empresa';
+
+  let text = `QUICK-SCAN — ${empresa}\n${'─'.repeat(35)}\n\n`;
+  text += `Facturación mensual:  ${fmt(d.revenue)} MXN\n`;
+  text += `Margen bruto:         ${d.margin}%\n`;
+  text += `Utilidad bruta:       ${fmt(gp)} MXN\n`;
+  text += `Break-even ROAS:      ${roas ? roas.toFixed(2) + 'x' : '—'}\n\n`;
+
+  text += `ESCENARIOS (inversión mensual en Meta Ads):\n`;
+
+  if (conservative > 0) {
+    const salesC = conservative * roas;
+    const profC  = (conservative * 3 * marginFrac) - conservative;
+    text += `  Conservador  ${padR(fmt(conservative), 14)} ventas necesarias: ${fmt(salesC)}  → +${fmt(profC)} si 3x ROAS\n`;
+  }
+  if (recommended > 0) {
+    const salesR = recommended * roas;
+    const profR  = (recommended * 3 * marginFrac) - recommended;
+    text += `  Recomendado  ${padR(fmt(recommended), 14)} ventas necesarias: ${fmt(salesR)}  → +${fmt(profR)} si 3x ROAS ★\n`;
+  }
+  if (d.desired > 0) {
+    const salesD = d.desired * roas;
+    const profD  = (d.desired * 3 * marginFrac) - d.desired;
+    const pctD   = gp > 0 ? (d.desired / gp * 100) : 0;
+    text += `  Objetivo     ${padR(fmt(d.desired), 14)} ventas necesarias: ${fmt(salesD)}  → +${fmt(profD)} si 3x ROAS`;
+    if (pctD > 15) text += ` ⚠ ${fmtPct(pctD)} de UB`;
+    text += '\n';
+  }
+
+  text += '\n';
+  if (d.product) text += `Qué anunciar: ${d.product}\n`;
+  text += `ROAS objetivo: 3.0x\n`;
+  if (d.prior > 0) text += `Inversión actual en ads: ${fmt(d.prior)}/mes\n`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('copy-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  });
+}
+
+function padR(str, len) {
+  while (str.length < len) str += ' ';
+  return str;
+}
+
+/* ─── RESET ──────────────────────────────────────────────────────────── */
+function resetAll() {
+  ['revenue','margin','product','prior','desired','empresa'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+  });
+  recalculate();
+}
+
+/* ─── INIT ───────────────────────────────────────────────────────────── */
+recalculate();
+</script>
+</body>
+</html>
