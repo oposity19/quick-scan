@@ -1040,7 +1040,7 @@ function recalculate() {
       `${fmt(investBreakeven)} MXN al ROAS de equilibrio (${roas.toFixed(2)}x) — no pierden, pero tampoco ganan en el spend`;
     document.getElementById('sg-recommended').textContent =
       `${fmt(investConservative)} MXN a un ROAS conservador de 3x — con margen real de ganancia`;
-    sgBox.style.display = '';
+    sgBox.style.display = 'flex';
   } else {
     sgBox.style.display = 'none';
   }
