@@ -776,6 +776,19 @@ td.cl-pct.warning-spend        { color: var(--warn); }
         <span class="input-unit input-unit-right">MXN</span>
       </div>
     </div>
+
+    <!-- Q6: Sales goal (opcional, dirección inversa) -->
+    <div class="field">
+      <label class="field-label" for="salesGoal">
+        ¿O tienen una meta de ventas en mente? <span style="opacity:.6">(opcional)</span>
+        <span class="field-q">"Quiero generar $X al mes" — calculamos cuánto invertir para lograrlo</span>
+      </label>
+      <div class="input-wrap">
+        <span class="input-unit input-unit-left">$</span>
+        <input type="number" id="salesGoal" placeholder="0" min="0" oninput="recalculate()">
+        <span class="input-unit input-unit-right">MXN</span>
+      </div>
+    </div>
   </section>
 
   <!-- RIGHT: RESULTS -->
@@ -802,6 +815,16 @@ td.cl-pct.warning-spend        { color: var(--warn); }
       <div>
         <strong>Margen bajo — ads pueden no ser viables</strong><br>
         Con un margen inferior al 33%, el ROAS necesario para cubrir costos es alto. Revisar estructura de precios antes de invertir en paid.
+      </div>
+    </div>
+
+    <!-- SALES GOAL → INVESTMENT NEEDED (dirección inversa, opcional) -->
+    <div class="viability-warn" id="salesgoal-box" style="display:none;background:var(--pos-bg);border-color:var(--pos);">
+      <span style="font-size:18px;flex-shrink:0;">🎯</span>
+      <div>
+        <strong>Para generar <span id="sg-target">$0</span>/mes en ventas necesitan invertir:</strong><br>
+        <span id="sg-breakeven"></span><br>
+        <span id="sg-recommended"></span>
       </div>
     </div>
 
@@ -952,6 +975,7 @@ function getInputs() {
     product:  document.getElementById('product').value.trim(),
     prior:    parseFloat(document.getElementById('prior').value)   || 0,
     desired:  parseFloat(document.getElementById('desired').value) || 0,
+    salesGoal: parseFloat(document.getElementById('salesGoal').value) || 0,
     empresa:  document.getElementById('empresa').value.trim(),
   };
 }
@@ -1004,6 +1028,21 @@ function recalculate() {
     viability.classList.add('visible');
   } else {
     viability.classList.remove('visible');
+  }
+
+  /* ── SALES GOAL → INVESTMENT NEEDED (dirección inversa) ── */
+  const sgBox = document.getElementById('salesgoal-box');
+  if (hasNumbers && d.salesGoal > 0 && roas > 0) {
+    const investBreakeven = d.salesGoal / roas;
+    const investConservative = d.salesGoal / 3;
+    document.getElementById('sg-target').textContent = fmt(d.salesGoal);
+    document.getElementById('sg-breakeven').textContent =
+      `${fmt(investBreakeven)} MXN al ROAS de equilibrio (${roas.toFixed(2)}x) — no pierden, pero tampoco ganan en el spend`;
+    document.getElementById('sg-recommended').textContent =
+      `${fmt(investConservative)} MXN a un ROAS conservador de 3x — con margen real de ganancia`;
+    sgBox.style.display = '';
+  } else {
+    sgBox.style.display = 'none';
   }
 
   /* ── MARGIN NOTE ── */
@@ -1220,7 +1259,7 @@ function padR(str, len) {
 
 /* ─── RESET ──────────────────────────────────────────────────────────── */
 function resetAll() {
-  ['revenue','margin','product','prior','desired','empresa'].forEach(id => {
+  ['revenue','margin','product','prior','desired','salesGoal','empresa'].forEach(id => {
     const el = document.getElementById(id);
     el.value = '';
   });
