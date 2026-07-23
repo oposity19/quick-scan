@@ -819,13 +819,20 @@ td.cl-pct.warning-spend        { color: var(--warn); }
     </div>
 
     <!-- SALES GOAL → INVESTMENT NEEDED (dirección inversa, opcional) -->
-    <div class="viability-warn" id="salesgoal-box" style="display:none;background:var(--pos-bg);border-color:var(--pos);">
-      <span style="font-size:18px;flex-shrink:0;">🎯</span>
-      <div>
-        <strong>Para generar <span id="sg-target">$0</span>/mes en ventas necesitan invertir:</strong><br>
-        <span id="sg-breakeven"></span><br>
-        <span id="sg-recommended"></span>
+    <div class="viability-warn" id="salesgoal-box" style="display:none;background:var(--pos-bg);border-color:var(--pos);flex-direction:column;align-items:stretch;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:18px;flex-shrink:0;">🎯</span>
+        <strong>Para generar <span id="sg-target">$0</span>/mes en ventas, esto necesitan invertir:</strong>
       </div>
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <thead>
+          <tr style="opacity:.65">
+            <th style="text-align:left;font-weight:600;padding:3px 0">ROAS</th>
+            <th style="text-align:right;font-weight:600;padding:3px 0">Inversión necesaria</th>
+          </tr>
+        </thead>
+        <tbody id="sg-table-body"></tbody>
+      </table>
     </div>
 
     <!-- SCENARIO TABLE -->
@@ -1030,16 +1037,29 @@ function recalculate() {
     viability.classList.remove('visible');
   }
 
-  /* ── SALES GOAL → INVESTMENT NEEDED (dirección inversa) ── */
+  /* ── SALES GOAL → INVESTMENT NEEDED (dirección inversa, ejemplificado breakeven→10x) ── */
   const sgBox = document.getElementById('salesgoal-box');
   if (hasNumbers && d.salesGoal > 0 && roas > 0) {
-    const investBreakeven = d.salesGoal / roas;
-    const investConservative = d.salesGoal / 3;
     document.getElementById('sg-target').textContent = fmt(d.salesGoal);
-    document.getElementById('sg-breakeven').textContent =
-      `${fmt(investBreakeven)} MXN al ROAS de equilibrio (${roas.toFixed(2)}x) — no pierden, pero tampoco ganan en el spend`;
-    document.getElementById('sg-recommended').textContent =
-      `${fmt(investConservative)} MXN a un ROAS conservador de 3x — con margen real de ganancia`;
+
+    // Puntos de quiebre: breakeven (dato real del cliente) + los mismos umbrales
+    // de escalamiento que ya usa el SOP de Andromeda (3x, 5x, 10x)
+    const roasPoints = [
+      { label: `${roas.toFixed(2)}x (equilibrio)`, value: roas, note: 'no pierden, tampoco ganan en el spend' },
+      { label: '3x', value: 3, note: 'conservador — margen real de ganancia' },
+      { label: '5x', value: 5, note: 'bueno — momento de escalar budget' },
+      { label: '10x', value: 10, note: 'excelente — escalar agresivo' },
+    ];
+
+    const tbody = document.getElementById('sg-table-body');
+    tbody.innerHTML = roasPoints.map(p => {
+      const invest = d.salesGoal / p.value;
+      return `<tr style="border-top:1px solid rgba(0,0,0,.08)">
+        <td style="padding:6px 0"><strong>${p.label}</strong><br><span style="opacity:.65;font-size:11px">${p.note}</span></td>
+        <td style="padding:6px 0;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">${fmt(invest)} MXN</td>
+      </tr>`;
+    }).join('');
+
     sgBox.style.display = 'flex';
   } else {
     sgBox.style.display = 'none';
